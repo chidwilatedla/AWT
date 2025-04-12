@@ -1,140 +1,59 @@
-
-// const express = require('express');
-// const app = express();
-// app.use(express.json());
-// let students = [
-//   { id: 1, name: 'John Doe', age: 20, major: 'Computer Science' },
-//   { id: 2, name: 'Jane Smith', age: 22, major: 'ECE' }
-// ];
-// app.get('/students', (req, res) => {
-//   res.json(students);
-// });
-// app.get('/students/:id', (req, res) => {
-//   const studentId = parseInt(req.params.id);
-//   const student = students.find(s => s.id === studentId);
-  
-//   if (student) {
-//     res.json(student);
-//   } else {
-//     res.status(404).send('Student not found');
-//   }
-// });
-// app.post('/students', (req, res) => {
-//   const newStudent = req.body;
-//   newStudent.id = students.length + 1; 
-//   students.push(newStudent);
-  
-//   res.status(201).json(newStudent);
-// });
-// app.delete('/students/:id', (req, res) => {
-//     const studentId = parseInt(req.params.id);
-  
-//     console.log(`Attempting to delete student with ID: ${studentId}`); 
-  
-//     const studentIndex = students.findIndex(s => s.id === studentId);
-  
-//     if (studentIndex !== -1) {
-//       students.push(studentIndex, 1); 
-//       res.status(200).send(`Student with ID ${studentId} deleted`);
-//     } else {
-//       console.log(`Student with ID ${studentId} not found`); 
-//       res.status(404).send('Student not found');
-//     }
-//   });
-
-//   app.put('/updateStudents/:id', (req, res) => {
-//     const studentId = parseInt(req.params.id);
-  
-//     const studentIndex = students.findIndex(s => s.id === studentId);
-  
-//     if (studentIndex !== -1) {
-//       students[studentIndex].name=req.body.name
-//       students[studentIndex].age=req.body.age
-//       students[studentIndex].major=req.body.major
-//       res.status(200).send(`Student with ID ${studentId} updated`);
-//     } else {
-//       console.log(`Student with ID ${studentId} not found`); 
-//       res.status(404).send('Student not found');
-//     }
-//   });
-
-// app.listen(3000, () => {
-//   console.log('Server is running on http://localhost:3000');
-// });
-
-
-
-
-
-const express = require('express')
-var app = express()
-
-let students = [
-    {"id" : "1" , "name" : "Raj" , "branch" : "IT"},
-    {"id" : "2" , "name" : "Ram" , "branch" : "CSE"}
-]
-app.use(express.json())
-
-
-app.get("/students",(req,res)=>{
-    res.json(students)
+const express=require('express')
+const mongoose=require('mongoose')
+const cors=require('cors')
+const dotenv=require('dotenv')
+const app=express()
+app.use(express.json)
+mongoose.connect('mongodb://localhost:27017/AWT')
+.then(()=>{
+    console.log("connected to mongodb");
 })
-
-app.get("/students/:id",(req,res)=>{
-    const id = req.params.id;
-    let student = students.find(s=>s.id===id)
+.catch((err)=>{
+    console.log(err);
+})
+const user=mongoose.model('user',new mongoose.Schema({
+    name:{type:String,required:true},
+    email:{type:String,requierd:true,unique:true},
+    password:{type:String,required:true} 
+}))
+app.post('/register',(req,res)=>{
+    const{name,email,password}=req.body;
+    const user=new user({name,email,password});
+    user.save();
+})
+app.post('/login',(req,res)=>{
+    const login=new login({email,password});
+})
+const products=mongoose.model('products',new mongoose.Schema({
+    name:{type:String,required:true},
+    description:{type:String},
+    price:{type:Number,required:true},
+    category:{type:String,required:true},
+    Stock:{type:Number}
+}))
+app.post('/register',(req,res)=>{
+    const user=new user ;
+    user.save();
+})
+// // app.post('/login',(req,res)=>{
+//    // const login=new login;
+// })
+// app.get('./products',(req,res)=>{
+//     productSchema;
+// })
+// app.get('./products/:id',(req,res)=>{
+//     productSchema;
+// })
+// app.post('addproducts',(req,res)=>{
     
-    if(student){
-        res.status(200).json({
-            "message" : "Student found",
-            "Student" : Student
-        })
-    }
-    else{
-        res.status(404).json({"message" : "student not found"})
-    }
-    app.listen(2000,()=>{
-    console.log("Server started")
+//     const products=new products(name,description,price,category,Stock); 
+// })
+// app.put('./products/:id',(req,res)=>{
+// })
+// app.delete('./products/:id',(req,res)=>{
+   
+// })
+
+app.listen(2000,()=>{
+    console.log("server is running on port 2000");
 })
-})
-
-// app.delete("/deleteStudent/:id",(req,res)=>{
-//     const id = req.params.id
-//     students = students.filter(s=>s.id!==id)
-//     res.status(200).json({
-//         "message" : "Deleted Student Successfully",
-//         "Student" : students
-//     })
-// })
-// app.listen(2000,()=>{
-//     console.log("Server started")
-// })
-
-// app.post("/addStudent",(req,res)=>{
-//     let student = req.body
-//     students.push(student)
-//     res.status(200).json({
-//         "message" : "Student Added Successfully",
-//         "Students" : students
-//     })
-// })
-
-// app.put("/updateStudent/:id",(req,res)=>{
-//     const id = req.params.id
-//     studentIndex = students.findIndex(s=>s.id===id)
-
-//     if(studentIndex!=-1){
-//         students[studentIndex].name = req.body.name
-//         students[studentIndex].branch = req.body.branch
-
-//         res.status(200).json({
-//             "message" : "Updated Successfully",
-//             "Students" : students        
-//         })
-//     }
-//     else{
-//         res.status(404).json({
-//             "message" : "Student not found"
-//         })
-//     }
-// })
